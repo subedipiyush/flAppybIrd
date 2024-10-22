@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Flappy Bird + Evolutionary Algorithm</title>
+
+<style>
+    #my_canvas {
+        border: 1px solid black;
+        width: 100%;
+        max-height: 500px;
+        background: #70f3e5;
+    }
+
+    .grid {
+        font-size: 30px;
+        display: grid;
+    }
+
+    .four-columns {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    .align-right {
+        text-align: right;
+    }
+
+    .flex {
+        display: flex;
+    }
+</style>
+
+<script src="js/utils/math.js"></script>
+<script src="js/utils/game.js"></script>
+
+<script src="js/shapes.js"></script>
+<script src="js/styles.js"></script>
+
+<script src="js/bird.js"></script>
+<script src="js/bird_controller.js"></script>
+<script src="js/path.js"></script>
+<script src="js/scorecard.js"></script>
+
+<script src="js/game.js"></script>
+<script src="js/games.js"></script>
+
+<!-- The following js are only required for automated games.  -->
+<script src="js/sensor.js"></script>
+<script src="js/neural_net/nn.js"></script>
+<script src="js/bot.js"></script>
+
+<script src="js/gameplay.js"></script>
+
+<canvas id="my_canvas"></canvas>
+
+<!-- Gameplay options -->
+<div class="grid four-columns">
+    <div class="flex">
+        <div>Score: </div>
+        <div id="scorecard"></div>
+    </div>
+    <div class="flex">
+        <div>HighScore: </div>
+        <div id="highscore"></div>
+    </div>
+    <div class="flex">
+        <input type="checkbox" id="botMode">Bot Mode</input>
+    </div>
+    <div class="flex">
+        <input type="checkbox" id="enableSensors" checked>Sensors Enabled</input>
+    </div>
+</div>
+
+<!--
+TODO:
+Better bird
+Viewport:Stop rendering what is not in the view.
+AI
+-->
+<script>
+    const canvas = document.getElementById("my_canvas");
+    const ctx = canvas.getContext("2d");
+
+    let g = undefined;
+    if (botMode() == true) {
+        g = Gameplay.BotMode(canvas);
+    } else {
+        g = Gameplay.ManualMode(canvas);
+    }
+    g.LoadGame();
+
+    // Press Space to start the game.
+    const SpaceBarKey = " ";
+    window.onkeydown = (event) => {
+        if (event && event.key == SpaceBarKey) {
+            g.StartGame();
+            animate();
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        g.Update();
+        if (g.Ended() == true) {
+            console.log("Game Over; Score: " + g.Score());
+        } else {
+            window.requestAnimationFrame(animate);
+        }
+    }
+
+    function botMode() {
+        return document.querySelector("#botMode").checked;
+    }
+</script>
+
+</html>

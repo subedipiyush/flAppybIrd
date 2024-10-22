@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Flappy Bird + Evolutionary Algorithm</title>
+
+<style>
+    #my_canvas{
+        border: 1px solid black;
+        width: 100%;
+        max-height: 500px;
+        background: darkseagreen;
+    }
+    #scorecard{
+        font-size: 30px;
+        text-align: center;
+    }
+</style>
+
+<script src="js/util.js"></script>
+<script src="js/shapes.js"></script>
+<script src="js/bird.js"></script>
+<script src="js/sensor.js"></script>
+<script src="js/neural_net/nn.js"></script>
+
+<canvas id="my_canvas"></canvas>
+
+<script>
+    const canvas = document.getElementById("my_canvas");
+    const ctx = canvas.getContext("2d");
+
+    const bird = new Bird(30, canvas.height/2);
+    const sensor = new Sensor(bird);
+
+    ctx.save();
+    bird.Render(ctx);
+    ctx.restore();
+
+    ctx.save();
+    sensor.Render(ctx);
+    ctx.restore();
+    // const n = GameNetwork();
+    // console.log(n);
+
+    // n.FeedForward([]);
+
+        
+    function testIntersection() {
+        const topLeft = new Point(0,0);
+        const numCols = 3;
+        const numRows = 5;
+        const frameWidth = canvas.width / numCols;
+        const frameHeight = canvas.height / numRows;
+        for (var i=0; i < numRows; i++) {
+            for (var j=0; j < numCols; j++) {
+                const frame = new Rectangle(topLeft.x + j*frameWidth, topLeft.y + i*frameHeight, frameWidth, frameHeight);
+    
+                const poly1 = randomPolygon(frame);
+                const poly2 = randomPolygon(frame);
+    
+                ctx.save();
+                frame.Render(ctx, style={border:"black", color: "rgb(0 0 0 / 0%)"});
+                ctx.restore();
+    
+                ctx.save();
+                poly1.Render(ctx);
+                poly2.Render(ctx);
+    
+                style = {}
+                if (poly1.Touches(poly2) == true) {
+                    style = {border: "red"};              
+                    poly1.Render(ctx, style);
+                    poly2.Render(ctx, style);
+                }
+                ctx.restore();
+            }
+        }
+    
+        function randomPolygon(frame) {
+            const numSides = Math.ceil(random(3, 3));
+            let points = [];
+            for (var k=0; k < numSides; k++){
+                points = points.concat(randomPointInRectangle(frame));    
+            }
+            return new Polygon(points);
+        }
+    
+        function randomPointInRectangle(rect) {
+            const x = random(rect.x, rect.x + rect.width);
+            const y = random(rect.y, rect.y + rect.height);
+            return new Point(x, y);
+        }    
+    }
+    
+    
+</script>
+
+
+</html>
