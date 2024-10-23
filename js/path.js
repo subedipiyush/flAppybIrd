@@ -1,11 +1,11 @@
 class Path {
     static Config = {
         Offset: Bird.Config.StartingPoint.x*5,
-        GapHeight: Bird.Config.Height*1.5,   // Just slightly bigger than the bird.
+        GapHeight: Bird.Config.Height*2,   // Just slightly bigger than the bird.
         DefaultSpeed: 1,
         ObstacleWidth: 15,
         NumObstacles: 1000,
-        FrameGap: 50
+        FrameGap: 100
     };
     static Style = {
         Obstacle: {

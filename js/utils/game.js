@@ -1,11 +1,3 @@
-function renderHighScore(score) {
-    document.getElementById('highscore').textContent = score;
-}
-
-function renderScore(score) {
-    document.getElementById('scorecard').textContent = score;
-}
-
 function saveHighScore(hs) {
     save('high-score', hs); 
 }
@@ -33,4 +25,12 @@ function save(k, v) {
 
 function read(k) {
     return window.localStorage.getItem(k);
+}
+
+function addKeyboardListener(key, callback) {
+    document.addEventListener("keydown", (event) => {
+        if (event && event.key == key) {
+            callback(event);
+        }
+    });
 }

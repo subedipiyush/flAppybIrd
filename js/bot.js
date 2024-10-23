@@ -16,7 +16,6 @@ class Bots {
     }
 }
 
-
 class Bot {
     constructor(game, net) {
         this.game = game;

@@ -1,7 +1,7 @@
 class BirdController{
     static Config = {
-        defaultSpeed: 0.4,
-        defaultAcceleration: 0.5,
+        defaultSpeed: 0.3,
+        defaultAcceleration: 0.3,
     };
 
     constructor(bird) {
@@ -26,13 +26,12 @@ class BirdController{
     }
 
     #addKeyBoardListeners() {
-        window.onkeydown = (event) => {
-            if (event && event.key == "ArrowUp") {
-                this.#move("Up");
-            } else if (event && event.key == "ArrowDown") {
-                this.#move("Down");
-            }
-        }
+        addKeyboardListener("ArrowUp", () => {
+            this.#move("Up");
+        });
+        addKeyboardListener("ArrowDown", () => {
+            this.#move("Down");
+        });
     }
 
     Update() {
@@ -40,6 +39,9 @@ class BirdController{
     }
 
     #move(move) {
+        if (!this.active) {
+            return;
+        }
         switch(move) {
             case "Up":
                 this.speed = -1 * this.defaultSpeed;

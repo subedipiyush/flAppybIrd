@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Flappy Bird + Evolutionary Algorithm</title>
+<title>flAppy bIrd</title>
 
 <style>
     #my_canvas {
@@ -62,10 +62,7 @@
         <div id="highscore"></div>
     </div>
     <div class="flex">
-        <input type="checkbox" id="botMode">Bot Mode</input>
-    </div>
-    <div class="flex">
-        <input type="checkbox" id="enableSensors" checked>Sensors Enabled</input>
+        <input type="checkbox" id="botMode" checked>Bot Mode</input>
     </div>
 </div>
 
@@ -76,39 +73,54 @@ Viewport:Stop rendering what is not in the view.
 AI
 -->
 <script>
-    const canvas = document.getElementById("my_canvas");
-    const ctx = canvas.getContext("2d");
+    function init() {
+        const canvas = document.getElementById("my_canvas");
+        const ctx = canvas.getContext("2d");
 
-    let g = undefined;
-    if (botMode() == true) {
-        g = Gameplay.BotMode(canvas);
-    } else {
-        g = Gameplay.ManualMode(canvas);
-    }
-    g.LoadGame();
-
-    // Press Space to start the game.
-    const SpaceBarKey = " ";
-    window.onkeydown = (event) => {
-        if (event && event.key == SpaceBarKey) {
-            g.StartGame();
-            animate();
-        }
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        g.Update();
-        if (g.Ended() == true) {
-            console.log("Game Over; Score: " + g.Score());
+        let g = undefined;
+        if (botMode() == true) {
+            g = Gameplay.BotMode(canvas);
         } else {
-            window.requestAnimationFrame(animate);
+            g = Gameplay.ManualMode(canvas);
+        }
+        g.LoadGame();
+
+        // Press Space to start the game.
+        const SpaceBarKey = " ";
+        addKeyboardListener(SpaceBarKey, () => {
+            g.Start();
+            animate();
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            g.Update();
+            updateScore(g.Score());
+            if (g.Ended() == true) {
+                console.log("Game Over; Score: " + g.Score());
+                saveHighScore(Math.max(highScore(), g.Score()));
+            } else {
+                window.requestAnimationFrame(animate);
+            }
         }
     }
 
     function botMode() {
-        return document.querySelector("#botMode").checked;
+        return document.getElementById("botMode").checked;
     }
+
+    function updateScore(score) {
+        document.getElementById("scorecard").textContent = score || 0;
+        if (score > highScore()) {
+            document.getElementById('highscore').textContent = score;
+        }
+    }
+
+    function highScore() {
+        return document.getElementById('highscore').textContent;
+    }
+
+    init();
 </script>
 
 </html>

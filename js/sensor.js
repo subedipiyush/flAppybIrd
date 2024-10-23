@@ -1,18 +1,22 @@
 class Sensor {
-    static CConfig = {
-        rayLength: 40, 
+    static Config = {
+        rayLength: 80, 
         raySpread: Math.PI/1.85,
-        numRays: 3,
-        render: false,
+        numRays: 4,
+    };
+    static Style = {
+        ray: {
+            noOverlap: {color: "brown"},
+            overlap: {color: "white"}
+        }
     };
 
     constructor(bird) {
         this.bird = bird;
 
-        this.rayLength = Sensor.CConfig.rayLength;
-        this.raySpread = Sensor.CConfig.raySpread;
-        this.numRays = Sensor.CConfig.numRays;
-        this.render = Sensor.CConfig.render;
+        this.rayLength = Sensor.Config.rayLength;
+        this.raySpread = Sensor.Config.raySpread;
+        this.numRays = Sensor.Config.numRays;
 
         this.rays = new Array(this.numRays);
         this.Update();
@@ -46,10 +50,8 @@ class Sensor {
         return this.rays.map((r) => r.reading);
     }
 
-    Render(ctx, style) {
-        if (this.render) {
-            this.rays.forEach((r) => r.Render(ctx, style.ray));    
-        }
+    Render(ctx, style=Sensor.Style) {
+        this.rays.forEach((r) => r.Render(ctx, style.ray));
     }
 }
 
@@ -80,11 +82,11 @@ class Ray extends Line {
     
     Render(ctx, style) {
         const l1 = new Line(this.p1, this.reading.nearestReading);
-        l1.Render(ctx, {border: style.noOverlap.color});
+        l1.Render(ctx, {Border: style.noOverlap.color});
         if (this.reading.offset == 0) {
             return
         }
         const l2 = new Line(this.reading.nearestReading, this.p2);
-        l2.Render(ctx, {border: style.overlap.color});
+        l2.Render(ctx, {Border: style.overlap.color});
     }
 }
